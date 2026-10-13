@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shabad | Computer Science Portfolio & CV</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#08080a',
+                        cardBg: '#121217',
+                        accent: '#6366f1',
+                        accentGlow: 'rgba(99, 102, 241, 0.4)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #08080a;
+            color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* Custom cursor dot - Made bigger */
+        #custom-cursor {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 22px;
+            height: 22px;
+            background: #818cf8;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            z-index: 9999;
+            box-shadow: 0 0 20px rgba(129, 140, 248, 0.9), 0 0 40px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Interactive Quote Letter Hover Effect */
+        .quote-letter {
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s, text-shadow 0.3s;
+        }
+        .quote-letter:hover {
+            transform: translateY(-12px) scale(1.15);
+            color: #818cf8;
+            text-shadow: 0 0 25px rgba(129, 140, 248, 0.8);
+        }
+
+        /* Glassmorphism card */
+        .glass-card {
+            background: rgba(18, 18, 23, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        .glass-card:hover {
+            border-color: rgba(129, 140, 248, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #08080a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+
+        /* Grid background pattern */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-grid min-h-screen text-slate-100 flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <div id="custom-cursor"></div>
+
+    <header class="fixed top-0 left-0 right-0 z-50 glass-card border-b border-white/5 py-4 px-6 md:px-12 flex justify-between items-center transition-all duration-300">
+        <div class="flex items-center space-x-3">
+            <span class="w-3 h-3 rounded-full bg-indigo-500 animate-pulse"></span>
+            <span class="font-bold tracking-wider text-lg bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">SHABAD.DEV</span>
+        </div>
+        <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-400">
+            <button onclick="switchView('home')" class="hover:text-indigo-400 transition-colors cursor-pointer nav-link active" id="nav-home">Home</button>
+            <button onclick="switchView('education')" class="hover:text-indigo-400 transition-colors cursor-pointer nav-link" id="nav-education">Education & Qualifications</button>
+            <button onclick="switchView('projects')" class="hover:text-indigo-400 transition-colors cursor-pointer nav-link" id="nav-projects">Projects</button>
+            <button onclick="switchView('contact')" class="hover:text-indigo-400 transition-colors cursor-pointer nav-link" id="nav-contact">Contact</button>
+        </nav>
+        <div class="flex items-center space-x-4">
+
+            <button onclick="switchView('contact')" class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-lg shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer">
+                Contact
+            </button>
+            <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white text-xl p-2 cursor-pointer">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-[#08080a]/95 z-40 flex flex-col items-center justify-center space-y-6 text-xl font-semibold hidden md:hidden">
+        <button onclick="switchView('home'); toggleMobileMenu();" class="text-slate-300 hover:text-indigo-400">Home</button>
+        <button onclick="switchView('education'); toggleMobileMenu();" class="text-slate-300 hover:text-indigo-400 text-center">Education<br>&<br>Qualifications</button>
+        <button onclick="switchView('skills'); toggleMobileMenu();" class="text-slate-300 hover:text-indigo-400">Skills & Stack</button>
+        <button onclick="switchView('projects'); toggleMobileMenu();" class="text-slate-300 hover:text-indigo-400">Projects</button>
+        <button onclick="switchView('contact'); toggleMobileMenu();" class="text-slate-300 hover:text-indigo-400">Contact</button>
+        <button onclick="toggleMobileMenu()" class="mt-8 px-6 py-2 rounded-xl bg-slate-800 text-white text-sm">Close</button>
+    </div>
+
+    <main class="flex-grow pt-28 pb-16 px-6 md:px-12 max-w-7xl mx-auto w-full">
+
+        <!-- VIEW 1: HOME / HERO SECTION -->
+        <section id="view-home" class="view-section transition-opacity duration-500">
+            <div class="min-h-[75vh] flex flex-col justify-center items-center text-center my-auto">
+                
+                <!-- Badge -->
+                <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-card border border-indigo-500/30 mb-8">
+                    <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                    <span class="text-xs font-mono text-indigo-300 uppercase tracking-widest">2nd Year CSE Student • UIT</span>
+                </div>
+
+                <!-- Massive Quote with Hover Letters -->
+                <h1 class="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight mb-8 select-none leading-none">
+                    <span class="quote-word inline-block mr-4">
+                        <span class="quote-letter">D</span><span class="quote-letter">r</span><span class="quote-letter">e</span><span class="quote-letter">a</span><span class="quote-letter">m</span><span class="quote-letter">.</span>
+                    </span>
+                    
+                    <span class="quote-word inline-block mr-4">
+                        <span class="quote-letter">D</span><span class="quote-letter">r</span><span class="quote-letter">a</span><span class="quote-letter">f</span><span class="quote-letter">t</span><span class="quote-letter">.</span>
+                    </span>
+                    
+                    <span class="quote-word inline-block">
+                        <span class="quote-letter">D</span><span class="quote-letter">e</span><span class="quote-letter">l</span><span class="quote-letter">i</span><span class="quote-letter">v</span><span class="quote-letter">e</span><span class="quote-letter">r</span><span class="quote-letter">.</span>
+                    </span>
+                </h1>
+
+                <!-- Subtitle -->
+                <p class="max-w-2xl text-lg sm:text-xl text-slate-400 font-normal leading-relaxed mb-10">
+                    Hello, I'm <strong class="text-white font-semibold">Shabad</strong>, a passionate Computer Science and Engineering undergraduate at <span class="text-indigo-400 font-medium">University Institute of Technology (UIT)</span>. Crafting robust algorithms, elegant code, and high-performance digital experiences.
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap justify-center gap-4">
+                    
+                    <button onclick="switchView('education')" class="px-8 py-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold tracking-wide shadow-xl shadow-blue-600/30 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex items-center space-x-3 text-center">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span class="flex flex-col text-left leading-tight">
+                            <span>Education</span>
+                            <span class="text-xs font-normal opacity-90">& Qualifications</span>
+                        </span>
+                    </button>
+                    <button onclick="switchView('skills')" class="px-8 py-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold tracking-wide shadow-xl shadow-blue-600/30 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex items-center space-x-3 text-center">
+                        <i class="fa-solid fa-code"></i>
+                        <span>Skills</span>
+                    </button>
+                    <button onclick="switchView('projects')" class="px-8 py-4 rounded-xl glass-card hover:bg-white/10 text-white font-semibold tracking-wide border border-white/10 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex items-center space-x-3">
+                        <i class="fa-solid fa-code"></i>
+                        <span>Projects</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Highlight Cards (Without School/Education details since they are now on their own page) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16 max-w-4xl mx-auto">
+                <div class="glass-card p-6 rounded-2xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 text-xl mb-4">
+                        <i class="fa-solid fa-university"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">University Institute of Technology</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed">B.Tech in Computer Science & Engineering (2025 – 2028). Currently in 2nd Year (3rd Semester).</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 text-xl mb-4">
+                        <i class="fa-solid fa-terminal"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Technical Prowess</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed">Deep focus on Data Structures, Algorithms, Python, C++, and modern web engineering stacks.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: EDUCATION & QUALIFICATIONS -->
+        <section id="view-education" class="view-section hidden transition-opacity duration-500">
+            <div class="mb-12">
+                <div class="flex items-center space-x-3 mb-3">
+                    <span class="px-3 py-1 rounded-md bg-indigo-500/10 text-indigo-400 text-xs font-mono uppercase tracking-widest">Academic Journey</span>
+                </div>
+                <h2 class="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4">Education & Qualifications</h2>
+                <p class="text-slate-400 max-w-2xl text-base">A chronological breakdown of my academic milestones, institutions, and rigorous scholarly training.</p>
+            </div>
+
+            <!-- Timeline Container -->
+            <div class="relative border-l border-indigo-500/30 ml-4 md:ml-8 pl-6 md:pl-10 space-y-12">
+
+                <!-- UIT Entry -->
+                <div class="relative group">
+                    <div class="absolute -left-[35px] md:-left-[51px] top-1.5 w-6 h-6 rounded-full bg-indigo-600 border-4 border-[#08080a] group-hover:scale-125 transition-transform flex items-center justify-center">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                    </div>
+                    <div class="glass-card p-8 rounded-2xl transition-all duration-300">
+                        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+                            <div>
+                                <span class="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-mono font-semibold">2025 – 2028 • 2nd Year (3rd Sem)</span>
+                                <h3 class="text-2xl font-bold text-white mt-2">Bachelor of Technology in Computer Science & Engineering</h3>
+                                <p class="text-indigo-400 font-medium text-lg mt-1">University Institute of Technology (UIT)</p>
+                            </div>
+                            <div class="text-right hidden sm:block">
+                                <span class="text-xs text-slate-500 block font-mono">ESTD 2000</span>
+                                <span class="text-xs text-slate-400 font-mono">HPU Campus</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                            Pursuing core computer science curriculum at University Institute of Technology, renowned for its strong technical programs, competitive coding culture, software engineering foundations, and innovation-driven environment. Actively engaging in advanced data structures, algorithms, object-oriented paradigms, and system design.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 rounded-lg bg-white/5 text-slate-300 text-xs font-mono">Data Structures</span>
+                            <span class="px-3 py-1 rounded-lg bg-white/5 text-slate-300 text-xs font-mono">Algorithms</span>
+                            <span class="px-3 py-1 rounded-lg bg-white/5 text-slate-300 text-xs font-mono">OOPs in C++</span>
+                            <span class="px-3 py-1 rounded-lg bg-white/5 text-slate-300 text-xs font-mono">Database Management</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 12th Standard Entry -->
+                <div class="relative group">
+                    <div class="absolute -left-[35px] md:-left-[51px] top-1.5 w-6 h-6 rounded-full bg-violet-600 border-4 border-[#08080a] group-hover:scale-125 transition-transform flex items-center justify-center">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                    </div>
+                    <div class="glass-card p-8 rounded-2xl transition-all duration-300">
+                        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+                            <div>
+                                <span class="px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-mono font-semibold">Graduated 2025</span>
+                                <h3 class="text-2xl font-bold text-white mt-2">Senior Secondary Education (Class XII - Science & Mathematics)</h3>
+                                <p class="text-violet-400 font-medium text-lg mt-1">Mount Maurya International School</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                            Successfully matriculated with a rigorous focus on Science and Advanced Mathematics. Built strong analytical thinking, quantitative problem-solving capabilities, and scientific reasoning that formed the bedrock for collegiate engineering studies.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 rounded-lg bg-white/5 text-slate-300 text-xs font-mono">Mathematics</span>
+                            <span class="px-3 py-1 rounded-lg bg-white/5 text-slate-300 text-xs font-mono">Physics</span>
+                            <span class="px-3 py-1 rounded-lg bg-white/5 text-slate-300 text-xs font-mono">Logical Reasoning</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10th Standard Entry -->
+                <div class="relative group">
+                    <div class="absolute -left-[35px] md:-left-[51px] top-1.5 w-6 h-6 rounded-full bg-cyan-600 border-4 border-[#08080a] group-hover:scale-125 transition-transform flex items-center justify-center">
+                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                    </div>
+                    <div class="glass-card p-8 rounded-2xl transition-all duration-300">
+                        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+                            <div>
+                                <span class="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-mono font-semibold">Graduated 2023 with Distinction</span>
+                                <h3 class="text-2xl font-bold text-white mt-2">Secondary Education (Class X)</h3>
+                                <p class="text-cyan-400 font-medium text-lg mt-1">Mount Maurya International School</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                            Completed foundational secondary schooling with distinction, exhibiting exceptional academic diligence, curiosity for technology, and top-tier standing across core disciplines.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 rounded-lg bg-white/5 text-slate-300 text-xs font-mono">Distinction Honor</span>
+                            <span class="px-3 py-1 rounded-lg bg-white/5 text-slate-300 text-xs font-mono">Foundational Sciences</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-12 text-center">
+                <button onclick="switchView('skills')" class="px-8 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm transition-all cursor-pointer inline-flex items-center space-x-2">
+                    <span>Continue to Technical Skills</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 3: SKILLS & TECH STACK -->
+        <section id="view-skills" class="view-section hidden transition-opacity duration-500">
+            <div class="mb-12">
+                <div class="flex items-center space-x-3 mb-3">
+                    <span class="px-3 py-1 rounded-md bg-indigo-500/10 text-indigo-400 text-xs font-mono uppercase tracking-widest">Expertise</span>
+                </div>
+                <h2 class="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4">Skills & Tech Stack</h2>
+                <p class="text-slate-400 max-w-2xl text-base">Languages, frameworks, and developer toolchains I leverage to engineer solutions.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Skill 1 -->
+                <div class="glass-card p-6 rounded-2xl group hover:border-indigo-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-python"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-1">Python</h3>
+                    <p class="text-xs text-slate-400 mb-4 font-mono">Scripting, automation, algorithms</p>
+                    <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div class="bg-yellow-500 h-full rounded-full w-[90%]"></div>
+                    </div>
+                </div>
+
+                <!-- Skill 2 -->
+                <div class="glass-card p-6 rounded-2xl group hover:border-indigo-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-1">C++ & OOP</h3>
+                    <p class="text-xs text-slate-400 mb-4 font-mono">Data Structures & Competitive Coding</p>
+                    <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div class="bg-blue-500 h-full rounded-full w-[85%]"></div>
+                    </div>
+                </div>
+
+                <!-- Skill 3 -->
+                <div class="glass-card p-6 rounded-2xl group hover:border-indigo-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-1">Web Development</h3>
+                    <p class="text-xs text-slate-400 mb-4 font-mono">HTML5, Tailwind CSS, JavaScript</p>
+                    <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div class="bg-indigo-500 h-full rounded-full w-[88%]"></div>
+                    </div>
+                </div>
+
+                <!-- Skill 4 -->
+                <div class="glass-card p-6 rounded-2xl group hover:border-indigo-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-1">AI & Toolchains</h3>
+                    <p class="text-xs text-slate-400 mb-4 font-mono">Git, GitHub, AI workflows</p>
+                    <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div class="bg-emerald-500 h-full rounded-full w-[80%]"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: PROJECTS -->
+        <section id="view-projects" class="view-section hidden transition-opacity duration-500">
+    <div class="min-h-[60vh] flex items-center justify-center px-6 py-16">
+        <div class="text-center max-w-2xl mx-auto">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center">
+                <i class="fa-solid fa-code text-3xl text-blue-400"></i>
+            </div>
+            <h2 class="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4">Projects in Progress</h2>
+            <p class="text-slate-400 text-base sm:text-lg leading-relaxed">
+                No projects to showcase right now — I'm currently learning, building,
+                and working toward projects that will be added here soon.
+            </p>
+            <p class="text-slate-500 text-sm mt-4">Check back soon for new work.</p>
+        </div>
+    </div>
+</section>
+
+        <!-- VIEW 5: CONTACT -->
+        <section id="view-contact" class="view-section hidden transition-opacity duration-500 max-w-2xl mx-auto">
+            <div class="flex flex-wrap justify-center gap-6 mb-8 text-sm text-slate-400">
+                <a href="mailto:shabad9857@gmail.com" class="hover:text-blue-400 transition-colors">
+                    <i class="fa-solid fa-envelope mr-2"></i>shabad9857@gmail.com
+                </a>
+                <a href="https://www.linkedin.com/in/shabad-3a4454284" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition-colors">
+                    <i class="fa-brands fa-linkedin mr-2"></i>LinkedIn
+                </a>
+            </div>
+
+            <div class="mb-12 text-center">
+                <div class="inline-flex items-center space-x-3 mb-3">
+                    <span class="px-3 py-1 rounded-md bg-indigo-500/10 text-indigo-400 text-xs font-mono uppercase tracking-widest">Connect</span>
+                </div>
+                <h2 class="text-4xl font-black tracking-tight text-white mb-4">Get In Touch</h2>
+                <p class="text-slate-400 text-base">Open to collaborations, internships, and technical discussions.</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-2xl">
+                <form onsubmit="handleContactSubmit(event)" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">Your Name</label>
+                        <input type="text" required placeholder="John Doe" class="w-full bg-[#08080a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">Your Email</label>
+                        <input type="email" required placeholder="john@example.com" class="w-full bg-[#08080a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">Message</label>
+                        <textarea rows="4" required placeholder="Hello Shabad, let's connect..." class="w-full bg-[#08080a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-indigo-500 transition-colors"></textarea>
+                    </div>
+                    <button type="submit" class="w-full py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all shadow-lg shadow-indigo-600/30 cursor-pointer">
+                        Send Message
+                    </button>
+                </form>
+                <div id="form-success" class="hidden mt-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm text-center font-medium">
+                    Message sent successfully! Shabad will get back to you soon.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="glass-card border-t border-white/5 py-8 px-6 md:px-12 text-center text-slate-500 text-sm">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>© 2026 Shabad • University Institute of Technology (UIT). All rights reserved.</p>
+            <div class="flex space-x-6 text-slate-400 text-lg">
+                <a href="https://github.com/Shabad-rj" target="_blank" class="hover:text-indigo-400 transition-colors" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/shabad-3a4454284" target="_blank" class="hover:text-indigo-400 transition-colors" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="mailto:shabad9857@gmail.com" class="hover:text-indigo-400 transition-colors"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Custom Cursor Follower Logic
+        const cursor = document.getElementById('custom-cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function renderCursor() {
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+            cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+            requestAnimationFrame(renderCursor);
+        }
+        requestAnimationFrame(renderCursor);
+
+        // View Switcher Function
+        function switchView(viewId) {
+            const sections = document.querySelectorAll('.view-section');
+            sections.forEach(sec => {
+                sec.classList.add('hidden');
+            });
+
+            const target = document.getElementById('view-' + viewId);
+            if (target) {
+                target.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Update Nav Active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-indigo-400', 'font-semibold');
+            });
+            const activeNav = document.getElementById('nav-' + viewId);
+            if (activeNav) {
+                activeNav.classList.add('text-indigo-400', 'font-semibold');
+            }
+        }
+
+        // Mobile Menu Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        if (mobileBtn) {
+            mobileBtn.addEventListener('click', toggleMobileMenu);
+        }
+
+        // Contact Form Handler
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const successBox = document.getElementById('form-success');
+            successBox.classList.remove('hidden');
+            e.target.reset();
+            setTimeout(() => {
+                successBox.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Initialize default view
+        switchView('home');
+    </script>
+</body>
+</html>
